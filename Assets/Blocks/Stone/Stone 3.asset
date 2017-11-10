@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1444a780d745fde43b9f95edd3c6a6e2, type: 3}
+  m_Name: Stone 3
+  m_EditorClassIdentifier: 
+  blockName: Stone
+  wallTiles:
+  - variations:
+    - {fileID: 1797148083481772, guid: 458d5a7047a100f4c991e9edba84bb16, type: 2}
+    - {fileID: 1797148083481772, guid: 55c54b9c5088879499177f02e70c2e21, type: 2}
+    innerCorners:
+    - {fileID: 1077218701149420, guid: ecdc2b36d151e564f8975f18bb1a69d6, type: 2}
+    outerCorners:
+    - {fileID: 1278376676118466, guid: 720c61387e6c5f24191d7eba1ac43269, type: 2}
+  floorTiles:
+  - variations:
+    - {fileID: 1278376676118466, guid: 1f0b0761e6090c547942f786bbe3c086, type: 2}
+    - {fileID: 1278376676118466, guid: 06a5548062dd094469826a0de2c14fc6, type: 2}
+    - {fileID: 1278376676118466, guid: 63c63c79d12a00143aeec1766ed3eb7f, type: 2}
+    - {fileID: 1278376676118466, guid: e6bf3e9a99f6bd94ba3093157d648f55, type: 2}
+    innerCorners: []
+    outerCorners: []
+  ceilingTiles:
+  - variations:
+    - {fileID: 1278376676118466, guid: d5bc9bdf3dc6e0d45a5f3086d9b71e91, type: 2}
+    innerCorners: []
+    outerCorners: []
+  traps: []
+  puzzles: []
+  other: []
+  similarBlocks: []
