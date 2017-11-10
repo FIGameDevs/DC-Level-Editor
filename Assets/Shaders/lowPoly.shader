@@ -1,4 +1,5 @@
-﻿Shader "LowPoly"
+//CREDIT: https://github.com/pavelkouril/unity-lowpoly-shader
+Shader "LowPoly"
 {
 	Properties
 	{
