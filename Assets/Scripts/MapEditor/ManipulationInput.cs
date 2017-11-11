@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class ManipulationInput : MonoBehaviour
 {
@@ -138,6 +139,22 @@ public class ManipulationInput : MonoBehaviour
                 manip.RotateSelectedBy(new Vector3(0, -30 * Time.deltaTime, 0));
             }
         }
+        if (Input.GetMouseButton(0))
+        {
+            if (moving != null)
+                moving.Move();
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (moving != null)
+                moving.EndMove();
+            moving = null;
+        }
+
+
+        if (EventSystem.current.IsPointerOverGameObject())//is mouse over UI
+            return;
+
         if (Physics.Raycast(ray, out hit, 100f, controlsMask))
         {
             if (Input.GetMouseButton(0))
@@ -151,17 +168,7 @@ public class ManipulationInput : MonoBehaviour
             }
 
         }
-        if (Input.GetMouseButton(0))
-        {
-            if (moving != null)
-                moving.Move();
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (moving != null)
-                moving.EndMove();
-            moving = null;
-        }
+        
         if (!BlockManipulator.IsManipulating && Physics.Raycast(ray, out hit, 100f, objectMask))
         {
             if (grid != null)

@@ -33,7 +33,15 @@ public class BlockManipulator : MonoBehaviour
     public static void AddSelectItem(GameObject item)
     {
         if (instance.selected.transform.childCount == 0)
+        {
             instance.selected.transform.position = item.transform.position;
+
+            var sRend = item.GetComponentInChildren<SkinnedMeshRenderer>();
+            if (sRend != null)
+                BlendshapeEditor.ShowMenu(sRend, item.GetComponentInChildren<InfoOnBlock>());
+            else
+                BlendshapeEditor.HideMenu();
+        }
 
         item.transform.SetParent(instance.selected.transform, true);
 
@@ -53,12 +61,18 @@ public class BlockManipulator : MonoBehaviour
         item.transform.SetParent(instance.selected.transform, true);
 
         instance.ShowHandles();
+        var sRend = item.GetComponentInChildren<SkinnedMeshRenderer>();
+        if (sRend != null)
+            BlendshapeEditor.ShowMenu(sRend, item.GetComponentInChildren<InfoOnBlock>());
+        else
+            BlendshapeEditor.HideMenu();
     }
 
     public static void DeselectAll()
     {
         instance.selected.transform.DetachChildren();
         instance.ShowHandles();
+        BlendshapeEditor.HideMenu();
     }
 
     public void NextVariation()
@@ -96,6 +110,8 @@ public class BlockManipulator : MonoBehaviour
                 Destroy(tr.gameObject);
             }
             ShowHandles();
+            BlendshapeEditor.HideMenu();
+
         }
     }
 
@@ -150,7 +166,7 @@ public class BlockManipulator : MonoBehaviour
 
             if (j == 0)
             {
-                arrowHolder.transform.position = go.transform.position + size/2f;
+                arrowHolder.transform.position = go.transform.position + size / 2f;
             }
         }
     }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public enum TileKind
 {
-    Normal, InnerCorner, OuterCorner
+    Normal=0, InnerCorner=1, OuterCorner=2
 }
-
+[System.Serializable]
 public struct BlockInfo // must be struct
 {
     public int BlockId;
@@ -20,6 +20,6 @@ public class InfoOnBlock : MonoBehaviour
 {
 
     public BlockInfo Info;
-
+    public float[] Blendshapes;
 
 }
