@@ -1,0 +1,5 @@
+//Swapping tile variations(smaller ones)
+//individual select boxes
+Changing blendshapes
+//Multiediting
+Serialization/saving

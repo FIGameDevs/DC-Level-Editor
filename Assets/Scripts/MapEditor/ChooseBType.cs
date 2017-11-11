@@ -10,6 +10,6 @@ public class ChooseBType : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ListTileTypes.Instance.ShowTypesOfTile(ListBlockTypes.AllBlocks.types[Id]);
+        ListTileTypes.Instance.ShowTypesOfTile(ListBlockTypes.AllBlocks.types[Id], new BlockInfo() {BlockId = Id,UpperVariation = 0, Variation = 0, MyTileKind = TileKind.Normal, TileTypeId = 0 });
     }
 }

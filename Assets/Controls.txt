@@ -1,0 +1,8 @@
+Move - (Shift)+WSAD
+Ascend, Descend - Mouse scroll
+Rotate camera - Right mouse button
+Select - Left mouse button
+Delete - Del
+Move - (Shift)+X/Y/Z
+Rotate - Q/E
+Toggle snapping - T

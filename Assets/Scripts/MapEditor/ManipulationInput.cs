@@ -12,24 +12,119 @@ public class ManipulationInput : MonoBehaviour
     GridPlaneControl grid;
     [SerializeField]
     BlockManipulator manip;
-
+    [SerializeField]
+    UnityEngine.UI.Toggle snapToggle;
     MoveSelected moving;
 
     void Update()
     {
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        //Shortcuts
+        if (Input.GetKeyDown(KeyCode.KeypadPlus) || Input.GetKeyDown(KeyCode.Plus))
+        {
+            manip.NextVariation();
+        }
+        if (Input.GetKeyDown(KeyCode.KeypadMinus) || Input.GetKeyDown(KeyCode.Minus))
+        {
+            manip.PrevVariation();
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad2)) {
+            var infos = manip.GetSelectedInfos();
+            BlockManipulator.DeselectAll();
+
+            for (int i = 0; i < infos.Length; i++)
+            {
+                TileSpawner.Spawn(infos[i].Info, infos[i].transform.position + Vector3.back * 4f);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            var infos = manip.GetSelectedInfos();
+            BlockManipulator.DeselectAll();
+
+            for (int i = 0; i < infos.Length; i++)
+            {
+                TileSpawner.Spawn(infos[i].Info, infos[i].transform.position + Vector3.forward * 4f);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            var infos = manip.GetSelectedInfos();
+            BlockManipulator.DeselectAll();
+
+            for (int i = 0; i < infos.Length; i++)
+            {
+                TileSpawner.Spawn(infos[i].Info, infos[i].transform.position + Vector3.left * 4f);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad6))
+        {
+            var infos = manip.GetSelectedInfos();
+            BlockManipulator.DeselectAll();
+
+            for (int i = 0; i < infos.Length; i++)
+            {
+                TileSpawner.Spawn(infos[i].Info, infos[i].transform.position + Vector3.right * 4f);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad7))
+        {
+            var infos = manip.GetSelectedInfos();
+            BlockManipulator.DeselectAll();
+
+            for (int i = 0; i < infos.Length; i++)
+            {
+                TileSpawner.Spawn(infos[i].Info, infos[i].transform.position + Vector3.down * 4f);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            var infos = manip.GetSelectedInfos();
+            BlockManipulator.DeselectAll();
+
+            for (int i = 0; i < infos.Length; i++)
+            {
+                TileSpawner.Spawn(infos[i].Info, infos[i].transform.position + Vector3.up * 4f);
+            }
+        }
         if (Input.GetKeyDown(KeyCode.Delete))
             manip.DestroySelected();
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+                manip.MoveSelectedBy(Vector3.left * 4f);
+            else
+                manip.MoveSelectedBy(Vector3.right * 4f);
+        }
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+                manip.MoveSelectedBy(Vector3.down * 4f);
+            else
+                manip.MoveSelectedBy(Vector3.up * 4f);
+        }
+        if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.Y))
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+                manip.MoveSelectedBy(Vector3.back * 4f);
+            else
+                manip.MoveSelectedBy(Vector3.forward * 4f);
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            manip.SetMoveInGrid(!BlockManipulator.moveInGrid);
+            snapToggle.isOn = !snapToggle.isOn;
+        }
         if (BlockManipulator.moveInGrid)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
-                manip.RotateSelectedBy(new Vector3(0, -45, 0));
+                manip.RotateSelectedBy(new Vector3(0, -90, 0));
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
-                manip.RotateSelectedBy(new Vector3(0, 45, 0));
+                manip.RotateSelectedBy(new Vector3(0, 90, 0));
             }
         }
         else
@@ -78,7 +173,10 @@ public class ManipulationInput : MonoBehaviour
         {
             if (Physics.Raycast(ray, out hit, 100f, objectMask))
             {
-                BlockManipulator.SelectItem(hit.collider.gameObject.transform.root.gameObject);
+                if (Input.GetKey(KeyCode.LeftShift))
+                    BlockManipulator.AddSelectItem(hit.collider.gameObject.transform.root.gameObject);
+                else
+                    BlockManipulator.SelectItem(hit.collider.gameObject.transform.root.gameObject);
 
 
             }

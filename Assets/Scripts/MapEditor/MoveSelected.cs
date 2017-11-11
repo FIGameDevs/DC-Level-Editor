@@ -11,6 +11,7 @@ public class MoveSelected : MonoBehaviour
     Vector3 axis;
 
     Vector3 startPos = Vector3.zero;
+    Vector3 offset;
 
     public void StartMove()
     {
@@ -21,30 +22,30 @@ public class MoveSelected : MonoBehaviour
         if (plane.Raycast(ray, out enter))
         {
 
-            startPos = ray.origin + ray.direction * enter - selPos;
+            var fromPos = ray.origin + ray.direction * enter;
+            startPos = manipulator.SelectedPos();
+            offset = fromPos - startPos;
         }
+
     }
 
     public void Move()
     {
 
-        if (startPos != Vector3.zero)
+        var selPos = manipulator.SelectedPos();
+        var plane = new Plane(Vector3.Cross(axis, new Vector3(axis.y, -axis.z, axis.x)), selPos);
+        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        float enter;
+        if (plane.Raycast(ray, out enter))
         {
-            var selPos = manipulator.SelectedPos();
-            var plane = new Plane(Vector3.Cross(axis, new Vector3(axis.y, -axis.z, axis.x)), selPos);
-            var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            float enter;
-            if (plane.Raycast(ray, out enter))
-            {
 
-                var rayPos = ray.origin + ray.direction * enter;
-                var posDelta = rayPos - selPos;
-                var newPos = selPos + new Vector3(posDelta.x * axis.x + (-startPos.x) * axis.x, posDelta.y * axis.y + (-startPos.y) * axis.y, posDelta.z * axis.z + (-startPos.z) * axis.z);
-                manipulator.MoveSelectedTo(newPos);
-            }
-
+            var rayPos = ray.origin + ray.direction * enter;
+            var posDelta = rayPos - startPos;
+            Vector3 newPos;
+            newPos = selPos + new Vector3((posDelta.x - offset.x) * axis.x, (posDelta.y - offset.y) * axis.y, (posDelta.z - offset.z) * axis.z);
+            manipulator.MoveSelectedTo(newPos);
+            startPos = newPos;
         }
-
     }
     public void EndMove()
     {

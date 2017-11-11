@@ -43,9 +43,9 @@ Shader "LevelEditor/GridDrawer"
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				float l = lerp(0.5 ,-10,abs((i.worldPos.x + 2) % 4));
-				float r = lerp(0.5,-10,abs((i.worldPos.z + 2) % 4));
-				float4 col = float4(l+r,l+r,l+r,1-l*r);
+				float l = lerp(0.5 ,-5,abs((i.worldPos.x + 2) % 4));
+				float r = lerp(0.5,-5,abs((i.worldPos.z + 2) % 4));
+				float4 col = float4(l+r,l+r,l+r,0.5-l*r);
 				/*
 				if (abs((i.worldPos.x + 2) % 4) < 0.025 || abs((i.worldPos.z + 2) % 4) < 0.025){
 					col = float4(1,1,1,1);

@@ -8,10 +8,13 @@ public class ListTileTypes : MonoBehaviour
 
     [SerializeField]
     GameObject showPrefab;
+    [SerializeField]
+    Text variationText;
 
     public static ListTileTypes Instance { get; private set; }
 
     List<GameObject> spawnedMenus = new List<GameObject>();
+    BlockInfo currentInfo;
 
     static string[] menuNames = new string[] { "Wall tiles", "Floor tiles", "Ceiling tiles", "Traps", "Puzzles", "Other" };
 
@@ -21,8 +24,27 @@ public class ListTileTypes : MonoBehaviour
         Instance = this;
     }
 
-    public void ShowTypesOfTile(BlockTypeSO block, int variation = 0)
+    public void UpVariation() {
+        if (currentInfo.UpperVariation > 49)
+            return;
+        variationText.text = (currentInfo.UpperVariation + 1).ToString();
+        currentInfo.UpperVariation += 1;
+        ShowTypesOfTile(ListBlockTypes.AllBlocks.types[currentInfo.BlockId], currentInfo);
+    }
+
+    public void DownVariation()
     {
+        if (currentInfo.UpperVariation < 1)
+            return;
+        variationText.text = (currentInfo.UpperVariation - 1).ToString();
+        currentInfo.UpperVariation -= 1;
+        ShowTypesOfTile(ListBlockTypes.AllBlocks.types[currentInfo.BlockId], currentInfo);
+    }
+
+    public void ShowTypesOfTile(BlockTypeSO block, BlockInfo info)//There are two types of variations, this one for blocks that don't go together and other one which is just details
+    {
+        var variation = info.UpperVariation;
+        currentInfo = info; 
         DestroyMenus();
         if (variation < block.wallTiles.Length)
             AddMenu(block.wallTiles[variation], 0);
@@ -37,6 +59,7 @@ public class ListTileTypes : MonoBehaviour
         if (variation < block.other.Length)
             AddMenu(block.other, 5);
 
+        variationText.text = currentInfo.UpperVariation.ToString();
     }
 
     void DestroyMenus()
@@ -55,7 +78,9 @@ public class ListTileTypes : MonoBehaviour
         go.transform.GetChild(0).GetComponent<Text>().text = menuNames[nameId];
 
         //set buttons inside
-        go.GetComponent<TileSpawner>().SetTile(tile);
+        var newInfo = currentInfo;
+        newInfo.TileTypeId = nameId;
+        go.GetComponent<TileSpawner>().SetTile(tile, newInfo);
 
         spawnedMenus.Add(go);
     }
@@ -67,7 +92,9 @@ public class ListTileTypes : MonoBehaviour
         go.transform.GetChild(0).GetComponent<Text>().text = menuNames[nameId];
 
         //set buttons inside
-        go.GetComponent<TileSpawner>().SetTile(tile);
+        var newInfo = currentInfo;
+        newInfo.TileTypeId = nameId;
+        go.GetComponent<TileSpawner>().SetTile(tile, newInfo);
 
 
         spawnedMenus.Add(go);

@@ -7,16 +7,19 @@ public class BlockManipulator : MonoBehaviour
     [SerializeField]
     LayerMask selectMask;
     [SerializeField]
-    GameObject highlight;
+    GameObject highlightParent;
+    [SerializeField]
+    GameObject highlightPrefab;
     [SerializeField]
     GameObject arrowHolder;
+    [SerializeField]
+    GameObject selected;
 
 
     public static bool moveInGrid { get; set; }
     public void SetMoveInGrid(bool s) { moveInGrid = s; }
     public static bool IsManipulating { get; private set; }
     public void SetManipulating(bool isM) { IsManipulating = isM; }
-    GameObject selected;
 
     static BlockManipulator instance;
 
@@ -24,73 +27,132 @@ public class BlockManipulator : MonoBehaviour
     {
         instance = this;
         moveInGrid = true;
-        if (selected == null)
-        {
-            highlight.SetActive(false);
-            arrowHolder.SetActive(false);
-        }
-        else
-        {
-            highlight.SetActive(true);
-            arrowHolder.SetActive(true);
-        }
+        ShowHandles();
+    }
+
+    public static void AddSelectItem(GameObject item)
+    {
+        if (instance.selected.transform.childCount == 0)
+            instance.selected.transform.position = item.transform.position;
+
+        item.transform.SetParent(instance.selected.transform, true);
+
+        instance.ShowHandles();
     }
 
     public static void SelectItem(GameObject item)
     {
-        instance.selected = item;
+        if (item == instance.selected)
+        {
+            DeselectAll();
+            return;
+        }
+        instance.selected.transform.DetachChildren();
+        instance.selected.transform.position = item.transform.position;
+
+        item.transform.SetParent(instance.selected.transform, true);
+
         instance.ShowHandles();
+    }
 
-        if (instance.selected == null)
-        {
-            instance.highlight.SetActive(false);
-            instance.arrowHolder.SetActive(false);
-        }
-        else
-        {
-            instance.highlight.SetActive(true);
-            instance.arrowHolder.SetActive(true);
-        }
+    public static void DeselectAll()
+    {
+        instance.selected.transform.DetachChildren();
+        instance.ShowHandles();
+    }
 
+    public void NextVariation()
+    {
+        ChangeVariation(1);
+    }
+    public void PrevVariation()
+    {
+        ChangeVariation(-1);
+    }
+
+    public void ChangeVariation(int shift)
+    {
+        if (selected.transform.childCount == 0)
+            return;
+        var infoBlocks = selected.GetComponentsInChildren<InfoOnBlock>();
+        DestroySelected();
+        for (int i = 0; i < infoBlocks.Length; i++)
+        {
+            var pos = infoBlocks[i].transform.position;
+            var info = infoBlocks[i].Info;
+            info.Variation += shift;
+            TileSpawner.Spawn(info, pos);
+        }
     }
 
     public void DestroySelected()
     {
         if (selected != null)
         {
-            Destroy(selected);
-            highlight.SetActive(false);
-            arrowHolder.SetActive(false);
+            while (selected.transform.childCount != 0)
+            {
+                var tr = selected.transform.GetChild(0);
+                tr.SetParent(null);
+                Destroy(tr.gameObject);
+            }
+            ShowHandles();
         }
     }
 
     void ShowHandles()
     {
-        Vector3 min = Vector3.one * 99999;
-        Vector3 max = Vector3.one * -999999;
-
-        var cols = selected.transform.GetComponentsInChildren<Collider>();
-        for (int i = 0; i < cols.Length; i++)
+        if (selected.transform.childCount == 0)
         {
-            if (cols[i].bounds.min.x < min.x)
-                min.x = cols[i].bounds.min.x;
-            if (cols[i].bounds.min.y < min.y)
-                min.y = cols[i].bounds.min.y;
-            if (cols[i].bounds.min.z < min.z)
-                min.z = cols[i].bounds.min.z;
-            if (cols[i].bounds.max.x > max.x)
-                max.x = cols[i].bounds.max.x;
-            if (cols[i].bounds.max.y > max.y)
-                max.y = cols[i].bounds.max.y;
-            if (cols[i].bounds.max.z > max.z)
-                max.z = cols[i].bounds.max.z;
+            highlightParent.SetActive(false);
+            arrowHolder.SetActive(false);
+            return;
         }
-        highlight.transform.position = (min + max) / 2f;
-        var size = max - min;
-        highlight.transform.localScale = size;
+        else
+        {
+            highlightParent.SetActive(true);
+            arrowHolder.SetActive(true);
+        }
 
+        for (int i = 0; i < highlightParent.transform.childCount; i++)
+        {
+            Destroy(highlightParent.transform.GetChild(i).gameObject);
+        }
 
-        arrowHolder.transform.position = highlight.transform.position + new Vector3(highlight.transform.localScale.y / 2f + 0.15f, highlight.transform.localScale.y / 2f + 0.15f, highlight.transform.localScale.y / 2f + 0.15f);
+        for (int j = 0; j < selected.transform.childCount; j++)
+        {
+            var child = selected.transform.GetChild(j);
+
+            Vector3 min = Vector3.one * 99999;
+            Vector3 max = Vector3.one * -999999;
+
+            var cols = child.GetComponentsInChildren<Collider>();
+            for (int i = 0; i < cols.Length; i++)
+            {
+                if (cols[i].bounds.min.x < min.x)
+                    min.x = cols[i].bounds.min.x;
+                if (cols[i].bounds.min.y < min.y)
+                    min.y = cols[i].bounds.min.y;
+                if (cols[i].bounds.min.z < min.z)
+                    min.z = cols[i].bounds.min.z;
+                if (cols[i].bounds.max.x > max.x)
+                    max.x = cols[i].bounds.max.x;
+                if (cols[i].bounds.max.y > max.y)
+                    max.y = cols[i].bounds.max.y;
+                if (cols[i].bounds.max.z > max.z)
+                    max.z = cols[i].bounds.max.z;
+            }
+            var go = Instantiate(highlightPrefab);
+
+            go.transform.position = (min + max) / 2f;
+            var size = max - min;
+            go.transform.localScale = size;
+            go.transform.SetParent(highlightParent.transform);
+
+            if (j == 0)
+            {
+                arrowHolder.transform.position = go.transform.position + size/2f;
+            }
+        }
     }
 
     private void LateUpdate()
@@ -105,11 +167,10 @@ public class BlockManipulator : MonoBehaviour
             IsManipulating = true;
             if (moveInGrid)
             {
-                shift = new Vector3(shift.x - shift.x % 4, shift.y - shift.y % 4, shift.z - shift.z % 4);
+                shift = new Vector3(Round.ToFour(shift.x), Round.ToThreePointSix(shift.y), Round.ToFour(shift.z));
             }
             selected.transform.position += shift;
-            highlight.transform.position += shift;
-            arrowHolder.transform.position += shift;
+            ShowHandles();
         }
 
     }
@@ -121,7 +182,9 @@ public class BlockManipulator : MonoBehaviour
             IsManipulating = true;
             if (moveInGrid)
             {
-                selected.transform.position = new Vector3(pos.x - pos.x % 4f, pos.y - pos.y % 3.6f, pos.z - pos.z % 4f);
+                //selected.transform.position = new Vector3(pos.x - pos.x % 4f, pos.y - pos.y % 3.6f, pos.z - pos.z % 4f);
+                selected.transform.position = new Vector3(Round.ToFour(pos.x), Round.ToThreePointSix(pos.y), Round.ToFour(pos.z));
+
             }
             else
             {
@@ -151,5 +214,11 @@ public class BlockManipulator : MonoBehaviour
             selected.transform.rotation = Quaternion.Euler(selected.transform.rotation.eulerAngles + angle);
             ShowHandles();
         }
+    }
+
+
+    public InfoOnBlock[] GetSelectedInfos()
+    {
+        return selected.GetComponentsInChildren<InfoOnBlock>();
     }
 }

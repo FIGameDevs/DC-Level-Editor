@@ -11,13 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1444a780d745fde43b9f95edd3c6a6e2, type: 3}
   m_Name: Stone 1
   m_EditorClassIdentifier: 
-  blockName: Stone
+  blockName: Not a stone
   wallTiles:
   - variations:
     - {fileID: 1797148083481772, guid: 458d5a7047a100f4c991e9edba84bb16, type: 2}
     - {fileID: 1797148083481772, guid: 55c54b9c5088879499177f02e70c2e21, type: 2}
     innerCorners:
     - {fileID: 1077218701149420, guid: ecdc2b36d151e564f8975f18bb1a69d6, type: 2}
+    outerCorners:
+    - {fileID: 1278376676118466, guid: 720c61387e6c5f24191d7eba1ac43269, type: 2}
+  - variations:
+    - {fileID: 1797148083481772, guid: 458d5a7047a100f4c991e9edba84bb16, type: 2}
+    - {fileID: 1797148083481772, guid: 55c54b9c5088879499177f02e70c2e21, type: 2}
+    innerCorners: []
     outerCorners:
     - {fileID: 1278376676118466, guid: 720c61387e6c5f24191d7eba1ac43269, type: 2}
   floorTiles:
