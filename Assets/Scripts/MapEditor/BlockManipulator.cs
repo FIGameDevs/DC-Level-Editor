@@ -115,6 +115,16 @@ public class BlockManipulator : MonoBehaviour
         }
     }
 
+    public static void DestroyAll()
+    {
+        DeselectAll();
+        var infos = MonoBehaviour.FindObjectsOfType<InfoOnBlock>();
+        for (int i = 0; i < infos.Length; i++)
+        {
+            Destroy(infos[i].gameObject);
+        }
+    }
+
     void ShowHandles()
     {
         if (selected.transform.childCount == 0)

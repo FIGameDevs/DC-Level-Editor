@@ -100,7 +100,7 @@ public class TileSpawner : MonoBehaviour
         }
     }
 
-    public static void Spawn(BlockInfo info, Vector3 pos)
+    public static void SpawnFull(BlockInfo info, Vector3 pos, float[] Blendshapes, Vector3 rot, bool addSelect = true)
     {
         var block = ListBlockTypes.AllBlocks.types[info.BlockId];
         GameObject[] tile = null;
@@ -175,8 +175,19 @@ public class TileSpawner : MonoBehaviour
 
         var go = Instantiate(tile[info.Variation]);
         go.transform.position = pos;
-        go.AddComponent<InfoOnBlock>().Info = info;
+        if (rot != Vector3.zero)
+            go.transform.rotation = Quaternion.Euler(rot);
+        var iOb = go.AddComponent<InfoOnBlock>();
+        iOb.Info = info;
+        iOb.Blendshapes = Blendshapes;
 
-        BlockManipulator.AddSelectItem(go);
+        if(addSelect)
+            BlockManipulator.AddSelectItem(go);
+
+    }
+
+    public static void Spawn(BlockInfo info, Vector3 pos)
+    {
+        SpawnFull(info, pos, null, Vector3.zero);
     }
 }

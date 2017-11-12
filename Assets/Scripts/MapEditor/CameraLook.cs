@@ -42,6 +42,7 @@ public class CameraLook : PivotBasedCameraRig
 
     protected void Update()
     {
+
         if (!Input.GetMouseButton(1))
             return;
         HandleRotationMovement();

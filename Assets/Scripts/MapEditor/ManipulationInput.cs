@@ -16,9 +16,12 @@ public class ManipulationInput : MonoBehaviour
     [SerializeField]
     UnityEngine.UI.Toggle snapToggle;
     MoveSelected moving;
-
     void Update()
     {
+        if (SaveAndLoad.GetInputField().isFocused)
+        {
+            return;
+        }
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         //Shortcuts

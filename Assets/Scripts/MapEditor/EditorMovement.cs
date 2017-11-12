@@ -5,6 +5,10 @@ using UnityEngine;
 public class EditorMovement : MonoBehaviour {
 	
 	void Update () {
+        if (SaveAndLoad.GetInputField().isFocused)
+        {
+            return;
+        }
         var mult = Input.GetKey(KeyCode.LeftShift) ? 30f : 10f;
         var move = new Vector3(Input.GetAxis("Horizontal"),0, Input.GetAxis("Vertical"));
         
