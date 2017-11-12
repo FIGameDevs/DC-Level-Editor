@@ -180,6 +180,8 @@ public class TileSpawner : MonoBehaviour
         var iOb = go.AddComponent<InfoOnBlock>();
         iOb.Info = info;
         iOb.Blendshapes = Blendshapes;
+        if (iOb.Blendshapes != null)
+            BlendshapeEditor.ApplyAll(iOb.GetComponent<SkinnedMeshRenderer>(), iOb);
 
         if(addSelect)
             BlockManipulator.AddSelectItem(go);

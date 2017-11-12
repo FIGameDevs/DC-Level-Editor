@@ -1,5 +1,6 @@
 //Swapping tile variations(smaller ones)
 //individual select boxes
-Changing blendshapes
+//Changing blendshapes
 //Multiediting
-Serialization/saving
+//Serialization/saving
+Test proper rotation and blendshape loading

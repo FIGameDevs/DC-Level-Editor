@@ -54,6 +54,19 @@ public class BlendshapeEditor : MonoBehaviour
         }
     }
 
+    public static void ApplyAll(SkinnedMeshRenderer rend, InfoOnBlock info)
+    {
+        if (rend != null && info != null && info.Blendshapes != null)
+        {
+            for (int i = 0; i < info.Blendshapes.Length; i++)
+            {
+                rend.SetBlendShapeWeight(i, info.Blendshapes[i]);
+                if (info.Blendshapes == null)
+                    info.Blendshapes = new float[rend.sharedMesh.blendShapeCount];
+            }
+        }
+    }
+
     public static void HideMenu()
     {
         instance.gameObject.SetActive(false);

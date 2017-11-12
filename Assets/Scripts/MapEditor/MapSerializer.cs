@@ -35,21 +35,28 @@ public static class MapSerializer
 
     public static void SaveMap(string path)
     {
-        var infos = MonoBehaviour.FindObjectsOfType<InfoOnBlock>();
-        var blocks = new SerBlock[infos.Length];
-        for (int i = 0; i < infos.Length; i++)
+        try
         {
-            blocks[i] = new SerBlock() { info = infos[i].Info, pos = (NotVector3)infos[i].transform.position, rot = (NotVector3)infos[i].transform.rotation.eulerAngles };
-            if (infos[i].Blendshapes != null)
-                blocks[i].Blendshapes = infos[i].Blendshapes;
+            var infos = MonoBehaviour.FindObjectsOfType<InfoOnBlock>();
+            var blocks = new SerBlock[infos.Length];
+            for (int i = 0; i < infos.Length; i++)
+            {
+                blocks[i] = new SerBlock() { info = infos[i].Info, pos = (NotVector3)infos[i].transform.position, rot = (NotVector3)infos[i].transform.rotation.eulerAngles };
+                if (infos[i].Blendshapes != null)
+                    blocks[i].Blendshapes = infos[i].Blendshapes;
+            }
+
+            var bf = new BinaryFormatter();
+            if (!Directory.GetParent(path).Exists)
+                Directory.CreateDirectory(Directory.GetParent(path).FullName);
+
+            var file = File.Create(path);
+            bf.Serialize(file, blocks);
         }
-
-        var bf = new BinaryFormatter();
-        if (!Directory.GetParent(path).Exists)
-            Directory.CreateDirectory(Directory.GetParent(path).FullName);
-
-        var file = File.Create(path);
-        bf.Serialize(file, blocks);
+        catch (System.Exception ex){
+            Debug.Log("Error while saving.");
+            Debug.Log(ex.Message);
+        }
     }
 
     public static void LoadMap(string path)
@@ -73,9 +80,11 @@ public static class MapSerializer
                     TileSpawner.SpawnFull(blocks[i].info, (Vector3)blocks[i].pos, blocks[i].Blendshapes, (Vector3)blocks[i].rot, false);
                 }
             }
-            catch
+            catch(System.Exception ex)
             {
                 Debug.Log("Uh oh error while loading.");
+                Debug.Log(ex.Message);
+
             }
 
         }
