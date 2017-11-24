@@ -23,9 +23,9 @@ public class BlockManipulator : MonoBehaviour
 
     static BlockManipulator instance;
 
-    private void Start() //TODO: Input na jedno místo, první pohyb a pak až selectování ty fagu
+    private void Start()
     {
-        instance = this;
+		instance = this;
         moveInGrid = true;
         ShowHandles();
     }
@@ -34,16 +34,30 @@ public class BlockManipulator : MonoBehaviour
     {
         if (instance.selected.transform.childCount == 0)
         {
-            instance.selected.transform.position = item.transform.position;
+            instance.selected.transform.position = item.transform.root.position;
 
-            var sRend = item.GetComponentInChildren<SkinnedMeshRenderer>();
+            var sRend = item.transform.root.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
             if (sRend != null)
-                BlendshapeEditor.ShowMenu(sRend, item.GetComponentInChildren<InfoOnBlock>());
+                BlendshapeEditor.ShowMenu(sRend, item.transform.root.gameObject.GetComponentInChildren<InfoOnBlock>());
             else
                 BlendshapeEditor.HideMenu();
         }
-
-        item.transform.SetParent(instance.selected.transform, true);
+        if(item.transform.root.gameObject == instance.selected){
+            var curr = item.transform;
+            for (int i = 0; i < 200; i++)
+            {
+                if(curr == null)
+                    return;
+                if(curr.gameObject.GetComponent<InfoOnBlock>()){
+                    curr.SetParent(null, true);
+                    break;
+                }
+                curr = curr.parent;
+            }
+        }
+        else {
+        	item.transform.SetParent(instance.selected.transform, true);            
+        }
 
         instance.ShowHandles();
     }
@@ -243,8 +257,8 @@ public class BlockManipulator : MonoBehaviour
     }
 
 
-    public InfoOnBlock[] GetSelectedInfos()
-    {
-        return selected.GetComponentsInChildren<InfoOnBlock>();
-    }
+	public static InfoOnBlock[] GetSelectedInfos()
+	{
+		return instance.selected.GetComponentsInChildren<InfoOnBlock>();
+	}
 }

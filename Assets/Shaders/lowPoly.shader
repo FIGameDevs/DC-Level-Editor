@@ -1,4 +1,6 @@
+
 //CREDIT: https://github.com/pavelkouril/unity-lowpoly-shader
+
 Shader "LowPoly"
 {
 	Properties
@@ -16,7 +18,7 @@ Shader "LowPoly"
 		{
 			Tags {"LightMode" = "ForwardBase"}
 
-			CGPROGRAM
+			CGPROGRAM/*
 
 			#pragma target 5.0
 			#pragma vertex vert
@@ -32,6 +34,7 @@ Shader "LowPoly"
 			uniform float4 _Color;
 			uniform sampler2D _MainTex;
 			uniform float _Shininess;
+			float2 _ShadowCoord;
 
 			struct v2g
 			{
@@ -129,7 +132,7 @@ Shader "LowPoly"
 				float3 lightDir = normalize(vertexToLight);
 
 				float3 ambientLight = UNITY_LIGHTMODEL_AMBIENT.rgb * _Color.rgb;
-				UNITY_LIGHT_ATTENUATION(atten, IN, IN.posWorld);
+				UNITY_LIGHT_ATTENUATION(atten, IN, IN.posWorld); //TODO: MAKE IT WORK
 				float3 diffuseReflection = atten * _LightColor0.rgb * _Color.rgb * saturate(dot(normalDir, lightDir));
 
 				float3 specularReflection = float3(0.0, 0.0, 0.0);
@@ -230,7 +233,7 @@ Shader "LowPoly"
 				float3 vertexToLight = _WorldSpaceLightPos0.w == 0 ? _WorldSpaceLightPos0.xyz : _WorldSpaceLightPos0.xyz - IN.posWorld.xyz;
 				float3 lightDir = normalize(vertexToLight);
 
-				UNITY_LIGHT_ATTENUATION(atten, IN, IN.posWorld.xyz);
+				UNITY_LIGHT_ATTENUATION(atten, IN, IN.posWorld.xyz); //TODO: MAKE IT WORK
 
 				float3 specularReflection = float3(0.0, 0.0, 0.0);
 				if (dot(normalDir, lightDir) >= 0.0)
@@ -242,7 +245,7 @@ Shader "LowPoly"
 				float4 colorTex = tex2D(_MainTex, IN.uv);
 				return float4((diffuseReflection + specularReflection) * colorTex, 1);
 			}
-
+			*/
 			ENDCG
 		}
 	}
